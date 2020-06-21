@@ -9,14 +9,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
+import java.text.BreakIterator;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText edt1, edt2;
-    private Button btn;
+    private Button btn,btndata;
+    private TextView txt;
+    private String boxers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +38,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn = findViewById(R.id.btn);
 
         btn.setOnClickListener(MainActivity.this);
+        txt=findViewById(R.id.txt);
+        btndata=findViewById(R.id.btngetdata);
+        txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Box");
+                    parseQuery.getInBackground("fV0wBp3Ri3", new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject object, ParseException e) {
+                            if (object != null && e == null) {
+
+                                txt.setText(object.get("name") + " ");
+
+                            } else {
+                                FancyToast.makeText(MainActivity.this, e.getMessage(), FancyToast.LENGTH_LONG, FancyToast.ERROR, true).show();
+                            }
+                        }
+                    });
+                }
+                catch(Exception e){
+                    FancyToast.makeText(MainActivity.this, e.getMessage(), FancyToast.LENGTH_LONG, FancyToast.ERROR, true).show();
+
+                }
+            }
+        });
+
+        btndata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boxers="";
+                ParseQuery<ParseObject> queryAll=ParseQuery.getQuery("Box");
+                queryAll.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+                        if(e==null){
+                            if(objects.size()>0){
+                                for(ParseObject box:objects)
+                                {
+                                    boxers=boxers +box.get("name") +"\n";
+                                }
+                                FancyToast.makeText(MainActivity.this, boxers , FancyToast.LENGTH_LONG, FancyToast.SUCCESS, true).show();
+
+                            }
+                            else{
+                                FancyToast.makeText(MainActivity.this, e.getMessage(), FancyToast.LENGTH_LONG, FancyToast.ERROR, true).show();
+                            }
+                        }
+
+                    }
+                });
+            }
+        });
     }
 
     @Override
