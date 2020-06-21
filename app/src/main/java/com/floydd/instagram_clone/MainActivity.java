@@ -2,6 +2,7 @@ package com.floydd.instagram_clone;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -69,7 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 boxers="";
-                ParseQuery<ParseObject> queryAll=ParseQuery.getQuery("Box");
+               final ParseQuery<ParseObject> queryAll=ParseQuery.getQuery("Box");
+                queryAll.whereGreaterThan("punchspeed",200);
+                queryAll.setLimit(1);
                 queryAll.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> objects, ParseException e) {
@@ -89,6 +92,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     }
                 });
+            }
+        });
+
+        findViewById(R.id.btnSwitchActivty).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,SignUpLoginActivity.class);
+                startActivity(intent);
             }
         });
     }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Instagram-clone</string>
+    <string name="enter_your_user_name">Enter Your User Name</string>
 </resources>
